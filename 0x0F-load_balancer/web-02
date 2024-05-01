@@ -1,0 +1,3 @@
+erver using the private key ~/.ssh/school
+# echo "SSH Public key" >> ~/.ssh/authorized_keys
+ssh -i ~/.ssh/school ubuntu@54.172.57.142
