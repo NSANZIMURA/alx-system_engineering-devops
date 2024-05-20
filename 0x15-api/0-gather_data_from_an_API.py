@@ -1,24 +1,17 @@
 #!/usr/bin/python3
-
-"""
-This script takes an employee ID and returns the information about his/her
-TODO list progress. Specifically, the ones they have completed.
-"""
-
-import marc_methods
+"""Returns to-do list information for a given employee ID."""
+import requests
 import sys
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.stderr.write(f"Usage: {sys.argv[0]} <user_id>\n")
-        sys.exit(1)
+    url = "https://jsonplaceholder.typicode.com/"
+    user = requests.get(url + "users/{}".format(sys.argv[1])).json()
+    todos = requests.get(url + "todos", params={"userId": sys.argv[1]}).json()
 
-    user = marc_methods.get_name(sys.argv[1])
-    if user is None:
-        sys.stderr.write("Invalid user id.\n")
-        sys.exit(1)
+    completed = [t.get("title") for t in todos if t.get("completed") is True]
+    print("Employee {} is done with tasks({}/{}):".format(
+        user.get("name"), len(completed), len(todos)))
+    [print("\t {}".format(c)) for c in completed]
 
-    todos = marc_methods.get_todos(sys.argv[1])
-    completed_tasks = marc_methods.get_completed_tasks(todos)
-    marc_methods.print_completed_tasks(user, len(todos), completed_tasks)
+
 
